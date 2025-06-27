@@ -6,6 +6,7 @@ import CS from './pages/CS'
 import English from './pages/English';
 import SignIn from './pages/Signin';
 import SignUp from './pages/Signup';
+import StartTest from './pages/StartTest';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/english" element={<English />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/coding/starttest" element={<StartTest />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
