@@ -1,5 +1,5 @@
 import {useState,useEffect} from 'react';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, Link} from 'react-router-dom';
 
 const StartTest = () => {
     const [seconds,setSeconds]=useState(60);
@@ -7,14 +7,50 @@ const StartTest = () => {
     const navigate=useNavigate();
 
     useEffect(()=>{
-        const time=setInterval(()=>{
+        const timer=setInterval(()=>{
             setSeconds(prev => ((prev>0)?prev-1:0));
         },1000);
         return () => clearInterval(timer);
     },[]);
 
+    useEffect( () => {
+        const handleKeyDown = (e) => {
+            if(e.ctrlkey && e.key=='q'){
+                if(document.fullscreenElement){
+                    document.exitFullscreen();
+                }
+            }
+        };
+        window.addEventListener('keydown',handleKeyDown);
+        return () => window.removeEventListener('keydown',handleKeyDown);
+    }, []);
+
+    const requestFullScreen = () => {
+        const element=document.documentElement;
+        if(element.requestFullscreen){
+            element.requestFullscreen();
+        }else if(element.webkitRequestFullScreen){
+            element.webkitRequestFullScreen();
+        }else if(element.msRequestFullScreen){
+            element.msRequestFullScreen();
+        }
+    };
+
+    useEffect( () => {
+        const handleFullScreenChange = (e) => {
+            if(!document.fullscreenElement){
+                alert('You exited fullscreen mode! This may disqualify your attempt!');
+            }
+        };
+        document.addEventListener('fullscreenchange',handleFullScreenChange);
+        return () => document.removeEventListener('fullscreenchange', handleFullScreenChange);
+    });
+
     const handleStart = () => {
-        if(agreed) navigate("/coding/starttest");
+        if(agreed){
+            requestFullScreen();
+            navigate("/coding/dsa");
+        } 
     };
 
     const user = {
@@ -24,6 +60,11 @@ const StartTest = () => {
 
     return (
         <div className='min-h-screen flex flex-col items-center justify-center p-6 bg-gray-50'>
+            <div className="absolute top-4 right-6 space-x-4">
+        <Link to="/">
+          <button className="px-4 py-2 text-sm font-medium text-[#347433] border border-[#347433] rounded hover:bg-[#347433] hover:text-white transition">Home</button>
+        </Link>
+        </div>
             <div className='bg-white rounded-[20px] border-2 border-black shadow-md p-6 w-full max-w-xl space-y-4'>
                 <h1 className='text-2xl font-bold'>Test Instructions</h1>
                 <div className='border rounded-[20px] p-4 bg-white'>

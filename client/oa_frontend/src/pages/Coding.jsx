@@ -4,6 +4,11 @@ const Coding = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
+      <div className="absolute top-4 right-6 space-x-4">
+        <Link to="/">
+          <button className="px-4 py-2 text-sm font-medium text-[#347433] border border-[#347433] rounded hover:bg-[#347433] hover:text-white transition">Home</button>
+        </Link>
+        </div>
       <h1 className="text-3xl font-bold mb-6">Choose Coding Category</h1>
     <div className="flex gap-5">
         <Link to="/coding/starttest">

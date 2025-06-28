@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode'; 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 
 const SignUp = () => {
@@ -35,6 +35,11 @@ const SignUp = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
+      <div className="absolute top-4 right-6 space-x-4">
+        <Link to="/">
+          <button className="px-4 py-2 text-sm font-medium text-[#347433] border border-[#347433] rounded hover:bg-[#347433] hover:text-white transition">Home</button>
+        </Link>
+        </div>
       <div className="bg-white shadow-xl rounded-xl w-full max-w-md p-6">
         <h2 className="text-2xl font-bold text-gray-800 mb-1">Create Account</h2>
         <p className="text-sm text-gray-500 mb-4">

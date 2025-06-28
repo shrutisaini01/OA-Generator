@@ -7,6 +7,7 @@ import English from './pages/English';
 import SignIn from './pages/Signin';
 import SignUp from './pages/Signup';
 import StartTest from './pages/StartTest';
+import DSATestPage from './pages/DSATestPage';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/coding/starttest" element={<StartTest />} />
+        <Route path="/coding/dsa" element={<DSATestPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
