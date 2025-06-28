@@ -2,7 +2,7 @@ import {useState,useEffect} from 'react';
 import {useNavigate, Link} from 'react-router-dom';
 
 const StartTest = () => {
-    const [seconds,setSeconds]=useState(60);
+    const [seconds,setSeconds]=useState(10);
     const [agreed,setAgreed]=useState(false);
     const navigate=useNavigate();
 
@@ -15,7 +15,7 @@ const StartTest = () => {
 
     useEffect( () => {
         const handleKeyDown = (e) => {
-            if(e.ctrlkey && e.key=='q'){
+            if(e.ctrlKey && e.key=='q'){
                 if(document.fullscreenElement){
                     document.exitFullscreen();
                 }
@@ -29,27 +29,38 @@ const StartTest = () => {
         const element=document.documentElement;
         if(element.requestFullscreen){
             element.requestFullscreen();
-        }else if(element.webkitRequestFullScreen){
+        }else if(element.webkitRequestFullscreen){
             element.webkitRequestFullScreen();
-        }else if(element.msRequestFullScreen){
+        }else if(element.msRequestFullscreen){
             element.msRequestFullScreen();
         }
     };
 
     useEffect( () => {
-        const handleFullScreenChange = (e) => {
+        const handleFullScreenChange = () => {
+            console.log("fullscreen fired!");
             if(!document.fullscreenElement){
                 alert('You exited fullscreen mode! This may disqualify your attempt!');
             }
         };
         document.addEventListener('fullscreenchange',handleFullScreenChange);
         return () => document.removeEventListener('fullscreenchange', handleFullScreenChange);
-    });
+    },[]);
 
     const handleStart = () => {
         if(agreed){
-            requestFullScreen();
-            navigate("/coding/dsa");
+            const element=document.documentElement;
+            if(element.requestFullscreen){
+                element.requestFullscreen().then(()=>{
+                    console.log("Entered fullscreen!");
+                    navigate("/coding/dsa");
+                }).catch((error) => {
+                    console.error("Fullscreen failed: ",error)
+                    navigate("/coding/dsa");
+                });
+            }else{
+                navigate("/coding/dsa");
+            }
         } 
     };
 
