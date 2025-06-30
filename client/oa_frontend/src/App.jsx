@@ -8,6 +8,8 @@ import SignIn from './pages/Signin';
 import SignUp from './pages/Signup';
 import StartTest from './pages/StartTest';
 import DSATestPage from './pages/DSATestPage';
+import DevTestPage from './pages/DevTestPage';
+import MLTestPage from './pages/MLTestPage';
 
 function App() {
   return (
@@ -22,6 +24,8 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/starttest" element={<StartTest />} />
         <Route path="/coding/dsa" element={<DSATestPage />} />
+        <Route path="/coding/development" element={<DevTestPage />} />
+        <Route path="/coding/machine_learning" element={<DevTestPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

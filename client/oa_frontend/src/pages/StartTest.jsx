@@ -16,7 +16,7 @@ const StartTest = () => {
     'english': '/english',
     'dsa': '/coding/dsa',
     'development': '/coding/development',
-    'machine_learning': '/coding/machine-learning',
+    'machine_learning': '/coding/machine_learning',
   };
   
 
