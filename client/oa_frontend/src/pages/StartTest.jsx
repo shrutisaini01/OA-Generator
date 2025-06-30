@@ -2,12 +2,25 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 
 const StartTest = () => {
-  const [seconds, setSeconds] = useState(10);
+  const [seconds, setSeconds] = useState(0);
   const [agreed, setAgreed] = useState(false);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const category = searchParams.get("category"); // 🔥 this is the key change
+  const category = searchParams.get("category");
+
+  const routeMap = {
+    'coding': '/coding',
+    'coding-cs': '/coding-cs',
+    'cs': '/cs',
+    'english': '/english',
+    'dsa': '/coding/dsa',
+    'development': '/coding/development',
+    'machine_learning': '/coding/machine-learning',
+  };
+  
+
+  const targetRoute = routeMap[category] || '/';
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -42,13 +55,10 @@ const StartTest = () => {
     if (agreed) {
       const element = document.documentElement;
       if (element.requestFullscreen) {
-        element.requestFullscreen().then(() => {
-          navigate(`/coding/${category}`);
-        }).catch(() => {
-          navigate(`/coding/${category}`);
-        });
+        element.requestFullscreen()
+          .finally(() => navigate(targetRoute));
       } else {
-        navigate(`/coding/${category}`);
+        navigate(targetRoute);
       }
     }
   };
@@ -77,7 +87,11 @@ const StartTest = () => {
           <input type="checkbox" id="agree" onChange={() => setAgreed(!agreed)} />
           <label htmlFor="agree" className="text-sm">I agree to the privacy policy.</label>
         </div>
-        <button className="bg-green-600 text-white px-4 py-2 rounded disabled:opacity-50" disabled={seconds > 0 || !agreed} onClick={handleStart}>
+        <button
+          className="bg-green-600 text-white px-4 py-2 rounded disabled:opacity-50"
+          disabled={seconds > 0 || !agreed}
+          onClick={handleStart}
+        >
           Start Test
         </button>
       </div>
