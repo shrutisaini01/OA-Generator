@@ -20,7 +20,7 @@ function App() {
         <Route path="/english" element={<English />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/coding/starttest" element={<StartTest />} />
+        <Route path="/starttest" element={<StartTest />} />
         <Route path="/coding/dsa" element={<DSATestPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

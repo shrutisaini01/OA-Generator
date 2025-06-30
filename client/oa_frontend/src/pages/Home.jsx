@@ -17,13 +17,13 @@ const Home = () => {
           <Link to="/coding">
           <button className="min-w-[200px] bg-[#347433] hover:bg-[#03A6A1] text-white text-lg border-2 border-white rounded-[12px] shadow-md shadow-gray-800 px-6 py-3 hover:shadow-lg transition text-wrap break-words">Coding</button>
           </Link>
-          <Link to="/coding-cs">
+          <Link to="/starttest?category=coding-cs">
           <button className="min-w-[200px] bg-[#347433] hover:bg-[#03A6A1] text-white text-lg border-2 border-white rounded-[12px] shadow-md shadow-gray-800 px-6 py-3 hover:shadow-lg transition text-wrap break-words">Coding + CS Fundamentals</button>
           </Link>
-          <Link to="/cs">
+          <Link to="/starttest?category=cs">
           <button className="min-w-[200px] bg-[#347433] hover:bg-[#03A6A1] text-white text-lg border-2 border-white rounded-[12px] shadow-md shadow-gray-800 px-6 py-3 hover:shadow-lg transition text-wrap break-words">CS Fundamentals</button>
           </Link>
-          <Link to="/english">
+          <Link to="/starttest?category=english">
           <button className="min-w-[200px] bg-[#347433] hover:bg-[#03A6A1] text-white text-lg border-2 border-white rounded-[12px] shadow-md shadow-gray-800 px-6 py-3 hover:shadow-lg transition text-wrap break-words">Reasoning + Verbal</button>
           </Link>
           </div>

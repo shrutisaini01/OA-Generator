@@ -11,13 +11,13 @@ const Coding = () => {
         </div>
       <h1 className="text-3xl font-bold mb-6">Choose Coding Category</h1>
     <div className="flex gap-5">
-        <Link to="/coding/starttest">
+        <Link to="/starttest?category=dsa">
           <button className="min-w-[200px] bg-[#347433] hover:bg-[#03A6A1] text-white text-lg border-2 border-white rounded-[12px] shadow-md shadow-gray-800 px-6 py-3 hover:shadow-lg transition text-wrap break-words">DSA</button>
           </Link>
-          <Link to="/dev">
+          <Link to="/starttest?category=development">
           <button className="min-w-[200px] bg-[#347433] hover:bg-[#03A6A1] text-white text-lg border-2 border-white rounded-[12px] shadow-md shadow-gray-800 px-6 py-3 hover:shadow-lg transition text-wrap break-words">Development</button>
           </Link>
-          <Link to="/ml">
+          <Link to="/starttest?category=machine_learning">
           <button className="min-w-[200px] bg-[#347433] hover:bg-[#03A6A1] text-white text-lg border-2 border-white rounded-[12px] shadow-md shadow-gray-800 px-6 py-3 hover:shadow-lg transition text-wrap break-words">Machine Learning</button>
           </Link>
           </div>
