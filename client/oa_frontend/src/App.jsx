@@ -25,7 +25,7 @@ function App() {
         <Route path="/starttest" element={<StartTest />} />
         <Route path="/coding/dsa" element={<DSATestPage />} />
         <Route path="/coding/development" element={<DevTestPage />} />
-        <Route path="/coding/machine_learning" element={<DevTestPage />} />
+        <Route path="/coding/machine_learning" element={<MLTestPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

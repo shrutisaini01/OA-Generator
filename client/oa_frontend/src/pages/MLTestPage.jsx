@@ -6,6 +6,7 @@ const MLTestPage = () => {
         const [violation, setViolations] = useState(0);
         const [isFullscreen, setIsFullscreen] = useState(!!document.fullscreenElement);
         const [userCode, setUserCode] = useState('');
+        const [testEnded,setTestEnded] = useState(false);
         const navigate = useNavigate();
 
         const question = {
@@ -38,25 +39,6 @@ const MLTestPage = () => {
           print("Slope (m):", m)
           print("Intercept (b):", b)`
           };
-          
-
-  useEffect(() => {
-    const handleFullScreenChange = () => {
-      const fullScreenMode = !!document.fullscreenElement;
-      setIsFullscreen(fullScreenMode);
-      if (!fullScreenMode) {
-        const newCount = violation + 1;
-        setViolations(newCount);
-        alert(`You exited fullscreen! Violation count: ${newCount}/3`);
-        if (newCount >= 3) {
-          alert("Violations exceeded! Your test is disqualified!");
-          navigate("/coding");
-        }
-      }
-    };
-    document.addEventListener('fullscreenchange', handleFullScreenChange);
-    return () => document.removeEventListener('fullscreenchange', handleFullScreenChange);
-  }, [violation, navigate]);
 
   const requestFullScreen = () => {
     const element = document.documentElement;
@@ -67,6 +49,27 @@ const MLTestPage = () => {
 
   return (
     <TestLayout>
+      {({ testEnded }) => {
+        useEffect(() => {
+          const handleFullScreenChange = () => {
+            const fullScreenMode = !!document.fullscreenElement;
+            setIsFullscreen(fullScreenMode);
+            if (!fullScreenMode && !testEnded) {
+              const newCount = violation + 1;
+              setViolations(newCount);
+              alert(`You exited fullscreen! Violation count: ${newCount}/3`);
+              if (newCount >= 3) {
+                alert("Violations exceeded! Your test is disqualified!");
+                navigate("/coding");
+              }
+            }
+          };
+          document.addEventListener('fullscreenchange', handleFullScreenChange);
+          return () => document.removeEventListener('fullscreenchange', handleFullScreenChange);
+        }, [violation, navigate, testEnded]);
+
+      return (
+        <>
       <h2 className="text-xl font-semibold text-blue-600 mb-4">{question.title}</h2>
       <pre className="whitespace-pre-wrap text-gray-700 mb-4">{question.description}</pre>
       <p className="text-sm font-semibold">Constraints:</p>
@@ -92,6 +95,9 @@ const MLTestPage = () => {
           </button>
         </div>
       )}
+    </>
+    );
+      }}
     </TestLayout>
   );
 };

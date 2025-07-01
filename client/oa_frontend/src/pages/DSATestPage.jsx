@@ -23,24 +23,6 @@ Output: [0,1]`,
 }`
   };
 
-  useEffect(() => {
-    const handleFullScreenChange = () => {
-      const fullScreenMode = !!document.fullscreenElement;
-      setIsFullscreen(fullScreenMode);
-      if (!fullScreenMode) {
-        const newCount = violation + 1;
-        setViolations(newCount);
-        alert(`You exited fullscreen! Violation count: ${newCount}/3`);
-        if (newCount >= 3) {
-          alert("Violations exceeded! Your test is disqualified!");
-          navigate("/coding");
-        }
-      }
-    };
-    document.addEventListener('fullscreenchange', handleFullScreenChange);
-    return () => document.removeEventListener('fullscreenchange', handleFullScreenChange);
-  }, [violation, navigate]);
-
   const requestFullScreen = () => {
     const element = document.documentElement;
     if (element.requestFullscreen) element.requestFullscreen();
@@ -50,31 +32,55 @@ Output: [0,1]`,
 
   return (
     <TestLayout>
-      <h2 className="text-xl font-semibold text-blue-600 mb-4">{question.title}</h2>
-      <pre className="whitespace-pre-wrap text-gray-700 mb-4">{question.description}</pre>
-      <p className="text-sm font-semibold">Constraints:</p>
-      <pre className="bg-gray-100 p-3 rounded mb-4 text-sm">{question.constraints}</pre>
+      {({ testEnded }) => {
+        useEffect(() => {
+          const handleFullScreenChange = () => {
+            const fullScreenMode = !!document.fullscreenElement;
+            setIsFullscreen(fullScreenMode);
+            if (!fullScreenMode && !testEnded) {
+              const newCount = violation + 1;
+              setViolations(newCount);
+              alert(`You exited fullscreen! Violation count: ${newCount}/3`);
+              if (newCount >= 3) {
+                alert("Violations exceeded! Your test is disqualified!");
+                navigate("/coding");
+              }
+            }
+          };
+          document.addEventListener('fullscreenchange', handleFullScreenChange);
+          return () => document.removeEventListener('fullscreenchange', handleFullScreenChange);
+        }, [violation, navigate, testEnded]);
 
-      <label className="block font-semibold mb-2">Your Code:</label>
-      <textarea
-        value={userCode}
-        onChange={e => setUserCode(e.target.value)}
-        placeholder={question.starterCode}
-        className="w-full h-64 p-3 border-2 border-gray-300 rounded font-mono text-sm"
-      />
+        return (
+          <>
+            <h2 className="text-xl font-semibold text-blue-600 mb-4 px-4 py-2">{question.title}</h2>
+            <pre className="whitespace-pre-wrap text-gray-700 mb-4 px-4 py-2">{question.description}</pre>
+            <p className="text-sm font-semibold px-4 py-2">Constraints:</p>
+            <pre className="bg-gray-100 p-3 rounded mb-4 text-sm px-4 py-2">{question.constraints}</pre>
 
-      {!isFullscreen && (
-        <div className="absolute inset-0 bg-black bg-opacity-50 text-white flex flex-col items-center justify-center z-50">
-          <p className="font-semibold text-lg mb-4">You exited fullscreen</p>
-          <p className="mb-6">Please re-enter fullscreen to resume your test</p>
-          <button
-            className="px-4 py-2 bg-green-500 rounded hover:bg-green-600"
-            onClick={requestFullScreen}
-          >
-            Re-enter full screen
-          </button>
-        </div>
-      )}
+            <label className="block font-semibold mb-2 px-4 py-2">Your Code:</label>
+            <textarea
+              value={userCode}
+              onChange={e => setUserCode(e.target.value)}
+              placeholder={question.starterCode}
+              className="w-full h-64 px-4 py-2 border-2 border-gray-300 rounded font-mono text-sm"
+            />
+
+            {!isFullscreen && !testEnded && (
+              <div className="absolute inset-0 bg-black bg-opacity-50 text-white flex flex-col items-center justify-center z-50">
+                <p className="font-semibold text-lg mb-4">You exited fullscreen</p>
+                <p className="mb-6">Please re-enter fullscreen to resume your test</p>
+                <button
+                  className="px-4 py-2 bg-green-500 rounded hover:bg-green-600"
+                  onClick={requestFullScreen}
+                >
+                  Re-enter full screen
+                </button>
+              </div>
+            )}
+          </>
+        );
+      }}
     </TestLayout>
   );
 };

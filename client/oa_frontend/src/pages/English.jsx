@@ -7,6 +7,7 @@ const English = () => {
   const [isFullscreen, setIsFullscreen] = useState(!!document.fullscreenElement);
   const [optionSelected, setOptionSelected] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [testEnded,setTestEnded] = useState(false);
   const navigate = useNavigate();
 
   const englishQuestions = [
@@ -29,24 +30,6 @@ const English = () => {
 
   const currentQuestion = englishQuestions[currentIndex];
 
-  useEffect(() => {
-    const handleFullScreenChange = () => {
-      const fullScreenMode = !!document.fullscreenElement;
-      setIsFullscreen(fullScreenMode);
-      if (!fullScreenMode) {
-        const newCount = violation + 1;
-        setViolations(newCount);
-        alert(`You exited fullscreen! Violation count: ${newCount}/3`);
-        if (newCount >= 3) {
-          alert("Violations exceeded! Your test is disqualified!");
-          navigate("/coding");
-        }
-      }
-    };
-    document.addEventListener('fullscreenchange', handleFullScreenChange);
-    return () => document.removeEventListener('fullscreenchange', handleFullScreenChange);
-  }, [violation, navigate]);
-
   const requestFullScreen = () => {
     const element = document.documentElement;
     if (element.requestFullscreen) element.requestFullscreen();
@@ -59,6 +42,7 @@ const English = () => {
       setCurrentIndex(currentIndex + 1);
       setOptionSelected('');
     } else {
+      setTestEnded(true);
       alert("Test completed!");
       navigate("/"); // Or show score or results
     }
@@ -66,6 +50,27 @@ const English = () => {
 
   return (
     <TestLayout>
+      {({ testEnded }) => {
+        useEffect(() => {
+          const handleFullScreenChange = () => {
+            const fullScreenMode = !!document.fullscreenElement;
+            setIsFullscreen(fullScreenMode);
+            if (!fullScreenMode && !testEnded) {
+              const newCount = violation + 1;
+              setViolations(newCount);
+              alert(`You exited fullscreen! Violation count: ${newCount}/3`);
+              if (newCount >= 3) {
+                alert("Violations exceeded! Your test is disqualified!");
+                navigate("/");
+              }
+            }
+          };
+          document.addEventListener('fullscreenchange', handleFullScreenChange);
+          return () => document.removeEventListener('fullscreenchange', handleFullScreenChange);
+        }, [violation, navigate, testEnded]);
+      
+        return (
+          <>
       <h1 className="mb-4 font-bold text-lg text-blue-600">English Questions</h1>
       <p className="mb-4">{currentQuestion.title}</p>
       <div className="space-y-2 mb-4">
@@ -103,6 +108,9 @@ const English = () => {
           </button>
         </div>
       )}
+      </>
+      );
+      }}
     </TestLayout>
   );
 };
