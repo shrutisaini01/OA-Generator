@@ -1,0 +1,2 @@
+OA Generator is a web-based assessment tool designed to help students prepare for placement exams and coding interviews. It offers multiple test categories like coding, CS fundamentals, reasoning & verbal, and domain-specific tests (e.g., full stack, ML). Built with React, Tailwind, Node.js, and MongoDB/MySQL, the app supports multiple programming languages and aims to provide a customizable, scalable platform for practicing online assessments. 
+#This project is currently under active development.
