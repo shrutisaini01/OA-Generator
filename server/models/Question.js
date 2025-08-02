@@ -1,16 +1,17 @@
-const mongoose=require('mongoose');
+const mongoose = require('mongoose');
 
-const questionSchema=new mongoose.Schema({
-    topic: String,
-    title: String,
-    description: String,
-    solution: String,
-    testCases: [
-        {
-            input: String,
-            output: String
-        }
-    ]
+const questionSchema = new mongoose.Schema({
+  title: String,
+  description: String,
+  aiSolution: String,
+  starterCode: String,
+  constraints: String,
+  testCases: [
+    {
+      input: String,
+      expectedOutput: String,
+    },
+  ],
 });
 
-module.exports=mongoose.model('Question',questionSchema);
+module.exports = mongoose.model('Question', questionSchema);
