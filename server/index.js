@@ -40,12 +40,6 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-app.get('/', (req, res) => {
-  res.send('Backend is working!');
-});
-
-
-
 // Global error handler
 app.use((err, req, res, next) => {
   console.error('❌ Global error handler:', err);
