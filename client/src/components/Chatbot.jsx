@@ -12,6 +12,8 @@ import {
   Sun
 } from 'lucide-react';
 
+const BASE_URL = 'https://oa-generator.onrender.com';
+
 const Chatbot = ({ theme, onThemeToggle }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
@@ -56,7 +58,7 @@ const Chatbot = ({ theme, onThemeToggle }) => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/chat', {
+      const response = await fetch(`${BASE_URL}/api/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
