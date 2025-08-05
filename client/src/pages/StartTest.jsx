@@ -7,10 +7,17 @@ const StartTest = () => {
   const [agreed, setAgreed] = useState(false);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const [user, setUser] = useState(null);
   const [showViolationModal, setShowViolationModal] = useState(false);
 
   const category = searchParams.get("category");
   const displayName = category?.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   const routeMap = {
     'dsa': '/coding/dsa',
@@ -99,9 +106,7 @@ const StartTest = () => {
         <div className='border-l-4 border-emerald-500 rounded-r-lg p-4 bg-gray-700 shadow-inner'>
           <div className="grid grid-cols-2 gap-y-2 text-sm font-medium">
             <p className="text-gray-400">Name:</p>
-            <p className="text-gray-200 font-semibold">Shruti Saini</p>
-            <p className="text-gray-400">Institution:</p>
-            <p className="text-gray-200 font-semibold">Graphic Era Hill University</p>
+            <p className="text-gray-200 font-semibold">{user?.name || 'Loading...'}</p>
             <p className="text-gray-400">Selected Test:</p>
             <p className="text-gray-200 font-semibold">{displayName}</p>
           </div>

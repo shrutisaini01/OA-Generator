@@ -21,7 +21,10 @@ const SignIn = () => {
       if (res.ok) {
         // Use a modal or message box instead of alert()
         alert(`Welcome back, ${data.user.name || username}`);
-        localStorage.setItem('user', JSON.stringify(data.user));
+        localStorage.setItem('user', JSON.stringify({
+          name: data.user.name || username,
+          institution: data.user.institution || 'Not Provided',
+        }));    
         navigate('/');
       } else {
         // Use a modal or message box instead of alert()
