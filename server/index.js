@@ -13,9 +13,12 @@ const chatRoutes = require('./routes/chat');
 dotenv.config();
 
 const app = express();
-
+const corsOptions = {
+  origin: ['https://oagen.netlify.app', 'http://localhost:5000'], // allow both dev and prod
+  credentials: true,
+};
+app.use(cors(corsOptions));
 app.use(express.json());
-app.use(cors());
 
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;
