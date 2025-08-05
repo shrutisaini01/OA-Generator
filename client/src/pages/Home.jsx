@@ -1,11 +1,18 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import {
+  LogOut,
+  BookOpenText,
+  Code,
+  GraduationCap,
+  Briefcase,
+  ChevronRight,
+} from 'lucide-react';
 
 const Home = () => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  // Load user from localStorage
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
@@ -13,70 +20,95 @@ const Home = () => {
     }
   }, []);
 
-  // Logout handler
   const handleLogout = () => {
     localStorage.removeItem('user');
     setUser(null);
-    navigate('/'); // Optional: force redirect
+    navigate('/');
   };
 
+  const testButtons = [
+    { text: 'Coding', to: '/coding', icon: <Code size={20} /> },
+    {
+      text: 'Coding + CS Fundamentals',
+      to: '/starttest?category=coding-cs',
+      icon: <GraduationCap size={20} />,
+    },
+    {
+      text: 'CS Fundamentals',
+      to: '/starttest?category=cs',
+      icon: <BookOpenText size={20} />,
+    },
+    {
+      text: 'Reasoning + Verbal',
+      to: '/starttest?category=english',
+      icon: <Briefcase size={20} />,
+    },
+  ];
+
   return (
-    <div className="flex items-center justify-center min-h-screen w-screen bg-gray-100 relative px-4">
-      
+    <div className="flex items-center justify-center min-h-screen w-screen bg-gradient-to-br from-emerald-50 to-emerald-200 font-inter p-4">
       {/* Top Right Controls */}
-      <div className="absolute top-4 right-6 space-x-4">
+      <div className="absolute top-6 right-6 flex items-center space-x-4 bg-white/50 backdrop-blur-md rounded-full p-2 shadow-lg">
         {!user ? (
           <>
             <Link to="/signin">
-              <button className="px-4 py-2 text-sm font-medium text-[#347433] border border-[#347433] rounded hover:bg-[#347433] hover:text-white transition">Sign In</button>
+              <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-emerald-800 border-2 border-emerald-800 rounded-full hover:bg-emerald-800 hover:text-white transition-all duration-300 transform hover:scale-105">
+                Sign In
+              </button>
             </Link>
             <Link to="/signup">
-              <button className="px-4 py-2 text-sm font-medium bg-[#347433] text-white rounded hover:bg-[#2c5f2e] transition">Sign Up</button>
+              <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-emerald-800 text-white rounded-full hover:bg-emerald-600 transition-all duration-300 transform hover:scale-105">
+                Sign Up
+              </button>
             </Link>
           </>
         ) : (
           <button
             onClick={handleLogout}
-            className="px-4 py-2 text-sm font-medium bg-[#2c5f2e] text-white rounded hover:bg-red-700 transition"
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-red-600 text-white rounded-full hover:bg-red-700 transition-all duration-300 transform hover:scale-105"
           >
-            Logout
+            <LogOut size={16} /> Logout
           </button>
         )}
       </div>
 
-      <div className="text-center">
-        {/* Welcome message */}
+      {/* Main Content */}
+      <div className="text-center bg-white/70 backdrop-blur-md p-8 md:p-12 rounded-3xl shadow-2xl max-w-4xl w-full">
         {user ? (
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-[#347433] mb-6">
-            Hey welcome {user.name || user.username}!<br />
-            <span className="text-lg sm:text-xl text-gray-700">Give an edge to your preparations by attempting the tests!</span>
-          </h2>
+          <div className="mb-8">
+            <h2 className="text-3xl md:text-5xl font-extrabold text-emerald-900 mb-2 leading-tight">
+              Hey welcome, {user.name || user.username}!
+            </h2>
+            <p className="text-lg md:text-xl text-gray-700 font-medium">
+              Give an edge to your preparations by attempting the tests!
+            </p>
+          </div>
         ) : (
-          <h1 className="text-4xl font-bold mb-6 text-[#347433]">OA Generator</h1>
+          <div className="mb-8">
+            <h1 className="text-4xl md:text-6xl font-black mb-4 text-emerald-900 leading-tight">
+              OA Generator
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-600 font-medium">
+              Your pathway to success in online assessments.
+            </p>
+          </div>
         )}
 
         {/* Test Buttons */}
-        <div className="flex flex-col items-center space-y-4">
-          <Link to="/coding">
-            <button className="min-w-[200px] bg-[#347433] hover:bg-[#03A6A1] text-white text-lg border-2 border-white rounded-[12px] shadow-md shadow-gray-800 px-6 py-3 hover:shadow-lg transition">
-              Coding
-            </button>
-          </Link>
-          <Link to="/starttest?category=coding-cs">
-            <button className="min-w-[200px] bg-[#347433] hover:bg-[#03A6A1] text-white text-lg border-2 border-white rounded-[12px] shadow-md shadow-gray-800 px-6 py-3 hover:shadow-lg transition">
-              Coding + CS Fundamentals
-            </button>
-          </Link>
-          <Link to="/starttest?category=cs">
-            <button className="min-w-[200px] bg-[#347433] hover:bg-[#03A6A1] text-white text-lg border-2 border-white rounded-[12px] shadow-md shadow-gray-800 px-6 py-3 hover:shadow-lg transition">
-              CS Fundamentals
-            </button>
-          </Link>
-          <Link to="/starttest?category=english">
-            <button className="min-w-[200px] bg-[#347433] hover:bg-[#03A6A1] text-white text-lg border-2 border-white rounded-[12px] shadow-md shadow-gray-800 px-6 py-3 hover:shadow-lg transition">
-              Reasoning + Verbal
-            </button>
-          </Link>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {testButtons.map((button) => (
+            <Link key={button.text} to={button.to}>
+              <button className="w-full flex items-center justify-between bg-emerald-700 text-white text-lg font-semibold rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 px-6 py-4 relative group overflow-hidden">
+                <span className="flex items-center gap-4 z-10">
+                  {button.icon} {button.text}
+                </span>
+                <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                  <ChevronRight size={24} />
+                </span>
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </button>
+            </Link>
+          ))}
         </div>
       </div>
     </div>

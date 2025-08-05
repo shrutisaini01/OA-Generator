@@ -1,41 +1,54 @@
-const express=require('express');
-const cors=require('cors');
-const {runCode} = require('./utils/codeRunner')
-const mongoose=require('mongoose');
-const dotenv=require('dotenv');
-const authRoutes=require('./routes/auth');
-const app=express();
+const express = require('express');
+const cors = require('cors');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const path = require('path');
+const fs = require('fs');
+
+const authRoutes = require('./routes/auth');
+const questionRoutes = require('./routes/question');
+const judgeRoutes = require('./routes/judge');
 
 dotenv.config();
+
+const app = express();
+
 app.use(express.json());
 app.use(cors());
 
-const PORT=process.env.PORT||5000;
-const MONGO_URI=process.env.MONGO_URI;
+const PORT = process.env.PORT || 5000;
+const MONGO_URI = process.env.MONGO_URI;
 
+// ✅ MongoDB
 mongoose.connect(MONGO_URI)
-    .then(() => console.log("MongoDB Connected!"))
-    .catch((err) => console.log("Error connecting mongodb: ",err));
+  .then(() => console.log("✅ MongoDB Connected!"))
+  .catch((err) => console.log("❌ MongoDB Connection Error:", err));
 
-app.use('/api',authRoutes);
-
-app.post('/api/run', async (req, res) => {
-    const { sourceCode, testCases, languageId } = req.body;
-  
-    try {
-      const result = await runCode(sourceCode, testCases, languageId);
-      res.json(result);
-    } catch (err) {
-      res.status(500).json({ error: err.message || 'Error executing code' });
-    }
-});
-
-const questionRoutes = require('./routes/question');
+// ✅ API Routes
+app.use('/api', authRoutes);
 app.use('/api/questions', questionRoutes);
-
-const judgeRoutes = require('./routes/judge');
 app.use('/api/judge', judgeRoutes);
 
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
+
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error('❌ Global error handler:', err);
+  res.status(500).json({ error: 'Internal server error' });
+});
+
+// ✅ Start server
 app.listen(PORT, () => {
-    console.log(`Server is running on port: ${PORT}!`);
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
+  console.log(`📚 Judge0 API integration ready`);
+  console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
