@@ -10,9 +10,11 @@ import {
   UserPlus,
   LogIn,
 } from 'lucide-react';
+import Chatbot from '../components/Chatbot';
 
 const Home = () => {
   const [user, setUser] = useState(null);
+  const [theme, setTheme] = useState('dark');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,6 +28,10 @@ const Home = () => {
     localStorage.removeItem('user');
     setUser(null);
     navigate('/');
+  };
+
+  const handleThemeToggle = () => {
+    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
   };
 
   const testButtons = [
@@ -113,6 +119,9 @@ const Home = () => {
           ))}
         </div>
       </div>
+      
+      {/* Chatbot */}
+      <Chatbot theme={theme} onThemeToggle={handleThemeToggle} />
     </div>
   );
 };

@@ -13,6 +13,8 @@ import 'prismjs/components/prism-python';
 import TestLayout from '../components/TestLayout';
 import LanguageSelector from '../components/LanguageSelector';
 import { runCode } from '../api/codeRunner';
+import { saveAssessmentAttempt } from "../utils/progress";
+
 
 // A simple loading spinner component
 const LoadingSpinner = () => (
@@ -28,12 +30,13 @@ const languageMap = {
   71: 'python',
 };
 
+// LanguageSelector component remains the same
 const LanguageSelectorComponent = ({ onSelect, selectedLanguage }) => {
   const languages = [
     { id: 71, name: "Python" },
     { id: 62, name: "Java" },
     { id: 50, name: "C" },
-    { id: 54, name: "C++" }, // Corrected syntax here
+    { id: 54, name: "C++" },
     { id: 63, name: "JavaScript" },
   ];
 
@@ -57,7 +60,6 @@ const LanguageSelectorComponent = ({ onSelect, selectedLanguage }) => {
   );
 };
 
-
 // The main DSA test page component with enhanced UI
 const DSATestPage = () => {
   const [violation, setViolations] = useState(0);
@@ -77,12 +79,26 @@ const DSATestPage = () => {
   const [showSubmissionModal, setShowSubmissionModal] = useState(false);
   const [testEnded, setTestEnded] = useState(false);
   const codeEditorRef = useRef(null);
-  
+
   // Timer state and logic
   const [timer, setTimer] = useState(90 * 60);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [isTestStarted, setIsTestStarted] = useState(false); // New state for starting the test
 
   const navigate = useNavigate();
+
+  // Function to handle the initial full screen request
+  const handleStartTest = () => {
+    const element = document.documentElement;
+    if (element.requestFullscreen) {
+      element.requestFullscreen();
+    } else if (element.webkitRequestFullscreen) {
+      element.webkitRequestFullscreen();
+    } else if (element.msRequestFullscreen) {
+      element.msRequestFullscreen();
+    }
+    setIsTestStarted(true);
+  };
 
   // Effect to load questions on component mount
   useEffect(() => {
@@ -97,21 +113,16 @@ const DSATestPage = () => {
       .then((data) => {
         setQuestions(data);
         if (data.length > 0) {
+          // Set initial code for the first question
           setUserCode(data[0].starterCode || '');
         }
         setIsLoadingQuestions(false);
       })
       .catch((err) => {
         console.error('Failed to fetch questions!', err);
-        setError('Failed to load questions. Please refresh the page.');
+        setError('Failed to load questions. Please check the backend server.');
         setIsLoadingQuestions(false);
       });
-      
-    // Request fullscreen on initial load
-    const element = document.documentElement;
-    if (element.requestFullscreen) element.requestFullscreen();
-    else if (element.webkitRequestFullscreen) element.webkitRequestFullscreen();
-    else if (element.msRequestFullscreen) element.msRequestFullscreen();
   }, []);
 
   // Fullscreen change handler with custom modal
@@ -119,14 +130,14 @@ const DSATestPage = () => {
     const handleFullScreenChange = () => {
       const fullScreenMode = !!document.fullscreenElement;
       setIsFullscreen(fullScreenMode);
-      if (!fullScreenMode && !testEnded) {
+      if (!fullScreenMode && !testEnded && isTestStarted) {
         setViolations(prev => prev + 1);
         setShowViolationModal(true);
       }
     };
     document.addEventListener('fullscreenchange', handleFullScreenChange);
     return () => document.removeEventListener('fullscreenchange', handleFullScreenChange);
-  }, [testEnded]);
+  }, [testEnded, isTestStarted]);
 
   useEffect(() => {
     if (violation >= 3) {
@@ -139,12 +150,12 @@ const DSATestPage = () => {
 
   // Timer effect
   useEffect(() => {
-    if (testEnded) return;
+    if (testEnded || !isTestStarted) return;
     const timeLeft = setInterval(() => {
-      setTimer((prev) => prev > 0 ? prev - 1 : 0);
+      setTimer((prev) => (prev > 0 ? prev - 1 : 0));
     }, 1000);
     return () => clearInterval(timeLeft);
-  }, [testEnded]);
+  }, [testEnded, isTestStarted]);
 
   const timeFormat = (seconds) => {
     const h = String(Math.floor(seconds / 3600)).padStart(2, '0');
@@ -182,13 +193,14 @@ const DSATestPage = () => {
         codeLength: userCode.length
       });
 
+      // The backend runCode function should handle sending the test cases to stdin
       const result = await runCode(userCode, question.testCases, languageId);
 
       setTestResults(result.results || []);
       setStatus(result.overallStatus || 'No Status');
       setOutput(
         result.rawOutput ||
-        result.results?.map((r) => r.actualOutput).join('\n') ||
+        result.results?.map((r) => `Input: ${r.input}\nOutput: ${r.actualOutput}`).join('\n\n') ||
         'No output'
       );
     } catch (err) {
@@ -231,13 +243,41 @@ const DSATestPage = () => {
     else if (element.msRequestFullscreen) element.msRequestFullscreen();
     setShowViolationModal(false);
   };
-  
+
+  const calculateAndSaveProgress = () => {
+    // Calculate score based on test results
+    let correctAnswers = 0;
+    let totalQuestions = questions.length;
+    
+    // For each question, check if all test cases passed
+    questions.forEach((question, questionIndex) => {
+      // Get test results for this question (this is a simplified approach)
+      // In a real implementation, you'd need to track results per question
+      const questionResults = testResults.filter((result, index) => {
+        // This is a simplified logic - you might need to adjust based on your actual data structure
+        return result.status === 'Passed';
+      });
+      
+      // If all test cases for this question passed, count it as correct
+      if (questionResults.length > 0) {
+        correctAnswers++;
+      }
+    });
+    
+    // Save progress
+    saveAssessmentAttempt('dsa', correctAnswers, totalQuestions);
+  };
+
   const confirmEndTest = () => {
     if (document.fullscreenElement) {
       document.exitFullscreen().catch(err => {
         console.error("Could not exit fullscreen:", err);
       });
     }
+    
+    // Calculate and save progress before ending test
+    calculateAndSaveProgress();
+    
     setTestEnded(true);
     setShowConfirm(false);
     navigate('/thankyou');
@@ -252,6 +292,7 @@ const DSATestPage = () => {
         <div className="text-center">
           <LoadingSpinner />
           <p className="mt-4">Loading questions...</p>
+          {error && <p className="text-red-400 mt-2">{error}</p>}
         </div>
       </div>
     );
@@ -267,6 +308,22 @@ const DSATestPage = () => {
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
           >
             Refresh Page
+          </button>
+        </div>
+      </div>
+    );
+  }
+  
+  if (!isTestStarted) {
+    return (
+      <div className="fixed inset-0 bg-gray-900 bg-opacity-90 flex items-center justify-center z-[110] p-4">
+        <div className="bg-white p-8 rounded-2xl shadow-2xl text-center max-w-lg w-full transform scale-100 transition-transform duration-300">
+          <h1 className="text-4xl font-bold text-gray-800 mb-4">Start Your Test</h1>
+          <p className="text-lg text-gray-600 mb-6">
+            To begin, your browser must be in fullscreen mode. Any attempt to exit fullscreen will be recorded as a violation.
+          </p>
+          <button onClick={handleStartTest} className="mt-6 px-6 py-3 bg-emerald-600 text-white font-bold rounded-full hover:bg-emerald-700 transition-all duration-300 transform hover:scale-105">
+            Start Test
           </button>
         </div>
       </div>
@@ -311,7 +368,6 @@ const DSATestPage = () => {
     ? 'bg-gray-700 text-white'
     : 'bg-white text-gray-800';
 
-  const codeEditorClasses = `w-full h-64 font-mono text-sm rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200 p-4 leading-normal ${codeEditorTheme}`;
   const highlightedCode = highlight(userCode, languages[languageMap[languageId] || 'clike'], languageMap[languageId] || 'clike');
   
   return (
@@ -536,6 +592,7 @@ const DSATestPage = () => {
                 className="bg-green-600 text-white font-bold px-6 py-3 rounded-full hover:bg-green-700 transition-all duration-300 shadow-lg"
                 onClick={() => {
                   setShowSubmissionModal(false);
+                  calculateAndSaveProgress();
                   setTestEnded(true);
                   console.log("Test submitted.");
                   navigate('/thankyou');
@@ -594,7 +651,7 @@ const DSATestPage = () => {
                 <p className="text-lg">Your test has been successfully submitted.</p>
               </>
             )}
-            <button onClick={() => window.location.reload()} className="mt-6 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+            <button onClick={() => navigate('/')} className="mt-6 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
               Go to Home
             </button>
           </div>

@@ -8,6 +8,7 @@ const fs = require('fs');
 const authRoutes = require('./routes/auth');
 const questionRoutes = require('./routes/question');
 const judgeRoutes = require('./routes/judge');
+const chatRoutes = require('./routes/chat');
 
 dotenv.config();
 
@@ -28,6 +29,7 @@ mongoose.connect(MONGO_URI)
 app.use('/api', authRoutes);
 app.use('/api/questions', questionRoutes);
 app.use('/api/judge', judgeRoutes);
+app.use('/api/chat', chatRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

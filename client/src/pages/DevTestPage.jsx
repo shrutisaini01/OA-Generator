@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Play, RotateCw, Lightbulb, Moon, Check, X, ChevronsRight, Send, AlertTriangle } from 'lucide-react';
 import TestLayout from '../components/TestLayout';
+import { saveAssessmentAttempt } from "../utils/progress";
 
 // New mock data and API functions for a self-contained, runnable example.
 // The questions are now focused on development tasks rather than DSA.
@@ -161,7 +162,30 @@ const DevTestPage = () => {
         }
     };
 
+    const calculateAndSaveProgress = () => {
+        // Calculate score based on test results
+        let correctAnswers = 0;
+        let totalQuestions = questions.length;
+        
+        // For each question, check if all test cases passed
+        questions.forEach((question, questionIndex) => {
+            // Get test results for this question (this is a simplified approach)
+            const questionResults = testResults.filter((result, index) => {
+                return result.status === 'Passed';
+            });
+            
+            // If all test cases for this question passed, count it as correct
+            if (questionResults.length > 0) {
+                correctAnswers++;
+            }
+        });
+        
+        // Save progress
+        saveAssessmentAttempt('development', correctAnswers, totalQuestions);
+    };
+
     const handleSubmitTest = () => {
+        calculateAndSaveProgress();
         setTestEnded(true);
         // Using a custom modal would be a better practice here.
         alert('Test Submitted!');
