@@ -19,14 +19,17 @@ const SignIn = () => {
   
       const data = await res.json();
       if (res.ok) {
+        // Use a modal or message box instead of alert()
         alert(`Welcome back, ${data.user.name || username}`);
         localStorage.setItem('user', JSON.stringify(data.user));
         navigate('/');
       } else {
+        // Use a modal or message box instead of alert()
         alert(data.message || 'Signin failed');
       }
     } catch (err) {
       console.error(err);
+      // Use a modal or message box instead of alert()
       alert('Something went wrong');
     }
   };
@@ -44,86 +47,82 @@ const SignIn = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white bg-opacity-50 flex items-center justify-center px-4">
-      <div className="absolute top-4 right-6 space-x-4">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center p-4 transition-colors duration-300">
+      <div className="absolute top-6 right-6 z-10">
         <Link to="/">
-          <button className="px-4 py-2 text-sm font-medium text-[#347433] border border-[#347433] rounded hover:bg-[#347433] hover:text-white transition">Home</button>
+          <button className="px-5 py-2 text-sm font-semibold text-green-700 dark:text-green-400 border-2 border-green-700 dark:border-green-400 rounded-full hover:bg-green-700 dark:hover:bg-green-400 hover:text-white dark:hover:text-gray-900 transition-all duration-300">
+            Home
+          </button>
         </Link>
-        </div>
-      <div className="bg-white rounded-xl w-full max-w-md p-6 shadow-lg">
-        <h2 className="text-2xl font-bold text-gray-900 mb-1">Log in</h2>
-        <p className="text-sm text-gray-700 mb-4">
+      </div>
+      <div className="bg-white dark:bg-gray-800 rounded-3xl w-full max-w-md p-8 shadow-2xl transition-colors duration-300">
+        <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-2">Log in</h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
           New user?{' '}
           <span
             onClick={() => navigate('/signup')}
-            className="text-blue-600 cursor-pointer hover:underline"
+            className="text-blue-500 cursor-pointer hover:underline"
           >
             Register Now
           </span>
         </p>
 
-        <div className="mb-4 flex justify-center">
+        <div className="mb-6 flex justify-center">
+          {/* Note: The GoogleLogin component is provided by a third-party library, so its internal styling cannot be changed with Tailwind. */}
           <GoogleLogin onSuccess={handleGoogleSuccess} onError={handleGoogleError} />
         </div>
 
-        {/* <div className="flex justify-center gap-4 mb-4">
-          <div className="w-9 h-9 bg-gray-100 rounded-full flex items-center justify-center text-blue-600 text-xl">f</div>
-          <div className="w-9 h-9 bg-gray-100 rounded-full flex items-center justify-center text-blue-700 text-xl">in</div>
-          <div className="w-9 h-9 bg-gray-100 rounded-full flex items-center justify-center text-gray-700 text-xl">GH</div>
-          <div className="w-9 h-9 bg-gray-100 rounded-full flex items-center justify-center text-purple-600 text-xl">O</div>
-        </div> */}
-
-        <div className="flex items-center mb-4">
-          <hr className="flex-grow border-gray-300" />
-          <span className="mx-2 text-gray-500 text-sm">or</span>
-          <hr className="flex-grow border-gray-300" />
+        <div className="flex items-center my-6">
+          <hr className="flex-grow border-t border-gray-300 dark:border-gray-700" />
+          <span className="mx-4 text-gray-500 dark:text-gray-400 text-sm font-medium">or</span>
+          <hr className="flex-grow border-t border-gray-300 dark:border-gray-700" />
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700">Username or Email</label>
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Username or Email</label>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Username or Email"
-              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-600"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:focus:ring-green-400 bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700">Password</label>
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter password"
-              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-600"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:focus:ring-green-400 bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300"
               required
             />
           </div>
 
-          <div className="flex justify-between items-center text-sm text-gray-700">
-            <label className="flex items-center gap-2">
-              <input type="checkbox" className="accent-green-700" />
+          <div className="flex justify-between items-center text-sm text-gray-700 dark:text-gray-400 mb-6">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" className="accent-green-600 dark:accent-green-400" />
               Remember Me
             </label>
-            <a href="#" className="text-blue-600 hover:underline">Forgot password</a>
+            <a href="#" className="text-blue-500 hover:underline">Forgot password</a>
           </div>
 
           <button
             type="submit"
-            className="w-full bg-green-700 text-white py-2 rounded-md hover:bg-green-800 transition"
+            className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white font-bold py-3 rounded-lg shadow-md hover:from-green-700 hover:to-green-800 transition-all duration-300 transform hover:scale-105"
           >
             Sign In
           </button>
         </form>
 
-        <p className="text-xs text-center text-gray-500 mt-4">
+        <p className="text-xs text-center text-gray-500 dark:text-gray-400 mt-6">
           By signing in, you agree to our{' '}
-          <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a> &{' '}
-          <a href="#" className="text-blue-600 hover:underline">Cookie Policy</a>.
+          <a href="#" className="text-blue-500 hover:underline">Privacy Policy</a> &{' '}
+          <a href="#" className="text-blue-500 hover:underline">Cookie Policy</a>.
         </p>
       </div>
     </div>

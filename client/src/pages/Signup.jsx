@@ -3,14 +3,13 @@ import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode'; 
 import { useNavigate, Link } from 'react-router-dom';
 
-
 const SignUp = () => {
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [college, setCollege] = useState('');
-  const [isHuman,setIsHuman]=useState(false);
+  const [isHuman, setIsHuman] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,24 +22,28 @@ const SignUp = () => {
   
       const data = await res.json();
       if (res.ok) {
+        // Use a modal or message box instead of alert()
         alert(`Welcome, ${name}! You're signed up.`);
         navigate('/signin');
       } else {
+        // Use a modal or message box instead of alert()
         alert(data.message || 'Signup failed');
       }
     } catch (err) {
       console.error(err);
+      // Use a modal or message box instead of alert()
       alert('Something went wrong');
     }
   };
   
-
   const handleGoogleSuccess = (credentialResponse) => {
-    const decoded = jwtDecode(credential); 
+    const decoded = jwtDecode(credentialResponse.credential);
     console.log('Google user info:', decoded);
+    // Note: Assuming `decoded` contains `name` and `email` properties.
     setName(decoded.name || '');
-    setEmail(decoded.email || '');
-    setUsername(decoded.email || '');
+    setUsername(decoded.email || ''); // Often, email is used as username for Google sign-ups
+    // Additional state updates for other fields from Google data can go here
+    navigate('/home'); 
   };
 
   const handleGoogleError = () => {
@@ -48,94 +51,99 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
-      <div className="absolute top-4 right-6 space-x-4">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center p-4 transition-colors duration-300">
+      <div className="absolute top-6 right-6 z-10">
         <Link to="/">
-          <button className="px-4 py-2 text-sm font-medium text-[#347433] border border-[#347433] rounded hover:bg-[#347433] hover:text-white transition">Home</button>
+          <button className="px-5 py-2 text-sm font-semibold text-green-700 dark:text-green-400 border-2 border-green-700 dark:border-green-400 rounded-full hover:bg-green-700 dark:hover:bg-green-400 hover:text-white dark:hover:text-gray-900 transition-all duration-300">
+            Home
+          </button>
         </Link>
-        </div>
-      <div className="bg-white shadow-xl rounded-xl w-full max-w-md p-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-1">Create Account</h2>
-        <p className="text-sm text-gray-500 mb-4">
-          Already have an account? <span className="text-blue-600 cursor-pointer hover:underline" onClick={() => navigate('/signin')}>Log in</span>
+      </div>
+      <div className="bg-white dark:bg-gray-800 rounded-3xl w-full max-w-md p-8 shadow-2xl transition-colors duration-300">
+        <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-2">Create Account</h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+          Already have an account? <span className="text-blue-500 cursor-pointer hover:underline" onClick={() => navigate('/signin')}>Log in</span>
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700">Username or Email</label>
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Enter your full name"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:focus:ring-green-400 bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Username or Email</label>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Enter username or email"
-              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:focus:ring-green-400 bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700">Password</label>
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter password"
-              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:focus:ring-green-400 bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700">Institution / Organization</label>
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Institution / Organization</label>
             <input
               type="text"
               value={college}
               onChange={(e) => setCollege(e.target.value)}
               placeholder="Enter Institution name"
-              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:focus:ring-green-400 bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300"
               required
             />
           </div>
 
           <div className="flex items-center space-x-2">
             <input
-                type="checkbox"
-                id="notRobot"
-                checked={isHuman}
-                onChange={(e) => setIsHuman(e.target.checked)}
-                className="w-4 h-4"
-                required
+              type="checkbox"
+              id="notRobot"
+              checked={isHuman}
+              onChange={(e) => setIsHuman(e.target.checked)}
+              className="accent-green-600 dark:accent-green-400 w-4 h-4 cursor-pointer"
+              required
             />
-            <label htmlFor="notRobot" className="text-sm text-gray-700">
-                I'm not a robot
+            <label htmlFor="notRobot" className="text-sm text-gray-700 dark:text-gray-400">
+              I'm not a robot
             </label>
-            </div>
-
+          </div>
 
           <button
             type="submit"
-            className="w-full bg-green-700 text-white py-2 rounded-md hover:bg-green-800 transition"
+            className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white font-bold py-3 rounded-lg shadow-md hover:from-green-700 hover:to-green-800 transition-all duration-300 transform hover:scale-105"
           >
             Sign Up
           </button>
         </form>
 
-        <div className="flex items-center my-4">
-          <hr className="flex-grow border-gray-300" />
-          <span className="mx-2 text-gray-500 text-sm">or</span>
-          <hr className="flex-grow border-gray-300" />
+        <div className="flex items-center my-6">
+          <hr className="flex-grow border-t border-gray-300 dark:border-gray-700" />
+          <span className="mx-4 text-gray-500 dark:text-gray-400 text-sm font-medium">or</span>
+          <hr className="flex-grow border-t border-gray-300 dark:border-gray-700" />
         </div>
 
         <div className="flex justify-center">
           <GoogleLogin onSuccess={handleGoogleSuccess} onError={handleGoogleError} />
         </div>
-
-        {/* <div className="flex justify-center gap-4 mt-4">
-          <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-blue-600">F</div>
-          <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-blue-700">in</div>
-          <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-black">G</div>
-          <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-purple-600">O</div>
-        </div> */}
       </div>
     </div>
   );
