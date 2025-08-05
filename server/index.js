@@ -25,6 +25,10 @@ mongoose.connect(MONGO_URI)
   .then(() => console.log("✅ MongoDB Connected!"))
   .catch((err) => console.log("❌ MongoDB Connection Error:", err));
 
+app.get('/', (req, res) => {
+  res.send('Hello from backend');
+});
+
 // ✅ API Routes
 app.use('/api', authRoutes);
 app.use('/api/questions', questionRoutes);
