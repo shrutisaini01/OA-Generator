@@ -103,7 +103,7 @@ const DSATestPage = () => {
   // Effect to load questions on component mount
   useEffect(() => {
     setIsLoadingQuestions(true);
-    fetch('http://localhost:5000/api/questions')
+    fetch('https://oa-generator.onrender.com/api/questions')
       .then((res) => {
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
