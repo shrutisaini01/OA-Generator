@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import {
   LineChart,
   Line,
@@ -27,6 +28,7 @@ import {
   Plus,
   Sun,
   Moon,
+  Home, // Import Home icon
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -75,6 +77,8 @@ const Progress = () => {
   const [theme, setTheme] = useState(
     localStorage.getItem("theme") || "light"
   );
+
+  const navigate = useNavigate(); // Initialize the navigate function
 
   useEffect(() => {
     loadProgressData();
@@ -152,7 +156,7 @@ const Progress = () => {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => window.history.back()}
+            onClick={() => navigate("/")} // Use navigate to go home
             className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             Go Back
@@ -177,6 +181,16 @@ const Progress = () => {
               Your Progress Dashboard
             </h1>
             <div className="flex gap-2 items-center">
+              {/* Home Button */}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => navigate("/")}
+                className="flex items-center gap-2 px-4 py-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+              >
+                <Home size={16} />
+                Home
+              </motion.button>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
