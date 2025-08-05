@@ -1,7 +1,7 @@
 // codeRunner.js - Client-side API wrapper
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'https://oa-generator.onrender.com/api';
 
 export const runCode = async (sourceCode, testCases, languageId) => {
   if (!sourceCode || !Array.isArray(testCases) || !testCases.length || !languageId) {
